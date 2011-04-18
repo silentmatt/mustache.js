@@ -110,7 +110,13 @@ var Mustache = function() {
 
       // for each {{#foo}}{{/foo}} section do...
       return template.replace(regex, function(match, type, name, content) {
-        var value = that.find(name, context);
+        var names = name.split(/\s+/);
+        var value = context;
+
+        for (var i = 0; i < names.length; i++) {
+          value = that.find(names[i], context, value);
+        }
+
         if(type == "^") { // inverted section
           if(!value || that.is_array(value) && value.length === 0) {
             // false or empty list, render it
@@ -164,10 +170,14 @@ var Mustache = function() {
           return "";
         case ">": // render partial
           return that.render_partial(name, context, partials);
-        case "{": // the triple mustache is unescaped
-          return that.find(name, context);
-        default: // escape the value
-          return that.escape(that.find(name, context));
+        default:
+          var names = name.split(/\s+/);
+          var value = context;
+          for (var i = 0; i < names.length; i++) {
+              value = that.find(names[i], context, value);
+          }
+          // escape value unless triple mustache
+          return operator === "{" ? value : that.escape(value);
         }
       };
       var lines = template.split("\n");
@@ -207,7 +217,7 @@ var Mustache = function() {
       find `name` in current `context`. That is find me a value
       from the view object
     */
-    find: function(name, context) {
+    find: function(name, context, previousValue) {
       name = this.trim(name);
 
       // Checks whether a value is thruthy or false or 0
@@ -223,7 +233,7 @@ var Mustache = function() {
       }
 
       if(typeof value === "function") {
-        return value.apply(context);
+        return value.call(context, previousValue);
       }
       if(value !== undefined) {
         return value;
