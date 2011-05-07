@@ -1,7 +1,19 @@
 
+/**
+ * The name of this module.
+ */
 exports.name = Mustache.name;
+/**
+ * The version of this module.
+ */
 exports.version = Mustache.version;
 
+/**
+ * Renders `template` using `data` as context object.
+ * @param {String} template the template.
+ * @param {Object} data the data object.
+ * @returns {String} the formatted text.
+ */
 exports.to_html = function() {
   return Mustache.to_html.apply(this, arguments);
 };

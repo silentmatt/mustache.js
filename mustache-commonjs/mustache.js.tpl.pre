@@ -1,6 +1,21 @@
-/*
- * CommonJS-compatible mustache.js module
+/**
+ * @fileoverview CommonJS-compatible mustache.js module.
  *
- * See http://github.com/janl/mustache.js for more info.
+ * This version of mustache.js adds filters. If a tag or section name consists
+ * of several space-separated items, the items are evaluated one at a time,
+ * starting with the right-most item. If an item evaluates to a function, the
+ * result of the previous item is passed to it as argument.
+ *
+ * @example
+ * var template = 'Hello &#123;&#123;upper world}}!';
+ * var data = {
+ *     upper: function(str) { return str.toUpperCase() },
+ *     world: 'world'
+ * };
+ * mustache.to_html(template, data);
+ * // -> 'Hello WORLD!'
+ *
+ * @see http://github.com/janl/mustache.js
+ * @see http://github.com/hns/mustache.js
  */
 
