@@ -112,8 +112,8 @@ var Mustache = function() {
       return template.replace(regex, function(match, type, name, content) {
         var names = name.split(/\s+/);
         var value = context;
-
-        for (var i = 0; i < names.length; i++) {
+        // loop through names in reverse order: {{foo bar}} -> foo(bar)
+        for (var i = names.length - 1; i >= 0; i--) {
           value = that.find(names[i], context, value);
         }
 
@@ -173,7 +173,8 @@ var Mustache = function() {
         default:
           var names = name.split(/\s+/);
           var value = context;
-          for (var i = 0; i < names.length; i++) {
+          // loop through names in reverse order: {{foo bar}} -> foo(bar)
+          for (var i = names.length - 1; i >= 0; i--) {
               value = that.find(names[i], context, value);
           }
           // escape value unless triple mustache
