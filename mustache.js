@@ -221,16 +221,22 @@ var Mustache = function() {
     find: function(name, context, previousValue) {
       name = this.trim(name);
 
-      // Checks whether a value is thruthy or false or 0
-      function is_kinda_truthy(bool) {
-        return bool === false || bool === 0 || bool;
+      if (name.indexOf('.') > -1) {
+        var names = name.split(/\./g);
+        value = this.find(names.slice(1).join('.'), this.find(names[0], context));
       }
+      else {
+        // Checks whether a value is thruthy or false or 0
+        function is_kinda_truthy(bool) {
+          return bool === false || bool === 0 || bool;
+        }
 
-      var value;
-      if(is_kinda_truthy(context[name])) {
-        value = context[name];
-      } else if(is_kinda_truthy(this.context[name])) {
-        value = this.context[name];
+        var value;
+        if(is_kinda_truthy(context[name])) {
+          value = context[name];
+        } else if(is_kinda_truthy(this.context[name])) {
+          value = this.context[name];
+        }
       }
 
       if(typeof value === "function") {
